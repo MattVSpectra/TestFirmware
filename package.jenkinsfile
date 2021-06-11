@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Get') {
+            def searcher = load 'findBuild.groovy'
+            def manifest = new File("Manifest")
+            manifest.eachLine { line ->
+                def tokens = line.tokenize()
+                def found = searcher.findBuildByHash(tokens[0], tokens[1])
+                println 'Build ' + found
+            }
+        }
+        stage('Zip') {
+        }
+    }
+}
