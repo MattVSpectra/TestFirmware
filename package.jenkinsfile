@@ -1,16 +1,24 @@
+
+@Library('JenkinsGlobalLibraries')
+import com.spectralogic.findBuild
+
 pipeline {
     agent any
     stages {
         stage('Get') {
-            def searcher = load 'findBuild.groovy'
-            def manifest = new File("Manifest")
-            manifest.eachLine { line ->
+        steps{
+        script{
+            def finder = new findBuild()
+            env.WORKSPACE = pwd()
+            def manifest = new File("${env.WORKSPACE}/Manifest")
+            manifest.text.split('\n').each { line ->
                 def tokens = line.tokenize()
-                def found = searcher.findBuildByHash(tokens[0], tokens[1])
+                def found = finder.findBuildByHash(tokens[0], tokens[1])
                 println 'Build ' + found
             }
         }
-        stage('Zip') {
+        }
         }
     }
 }
+
