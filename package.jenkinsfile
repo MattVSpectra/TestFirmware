@@ -20,7 +20,7 @@ pipeline {
                         copyArtifacts(
                             projectName: "${found[0]}",
                             selector: specific("${found[1]}"),
-                            target: arts 
+                            target: 'arts'
                         )
                     }
                 }
@@ -28,7 +28,7 @@ pipeline {
         }
         stage('Zip'){
             steps{
-                zip zipFile: 'package.zip', archive: true, dir: arts
+                zip zipFile: 'package.zip', archive: true, dir: 'arts'
                 cleanWs()
             }
         }
