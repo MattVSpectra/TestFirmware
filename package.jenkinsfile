@@ -7,8 +7,8 @@ pipeline {
     stages {
         stage('Get') {
             steps{
-
                 script{
+                    dir ('arts') { print pwd() }
                     def finder = new findBuild()
                     env.WORKSPACE = pwd()
                     def manifest = new File("${env.WORKSPACE}/Manifest")
@@ -20,6 +20,7 @@ pipeline {
                         copyArtifacts(
                             projectName: "${found[0]}",
                             selector: specific("${found[1]}")
+                            target: arts
                         )
                     }
                 }
@@ -27,7 +28,7 @@ pipeline {
         }
         stage('Zip'){
             steps{
-                zip zipFile: 'package.zip', archive: true
+                zip zipFile: 'package.zip', archive: true, dir: arts
                 cleanWs()
             }
         }
