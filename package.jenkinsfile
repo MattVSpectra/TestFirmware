@@ -6,18 +6,30 @@ pipeline {
     agent any
     stages {
         stage('Get') {
-        steps{
-        script{
-            def finder = new findBuild()
-            env.WORKSPACE = pwd()
-            def manifest = new File("${env.WORKSPACE}/Manifest")
-            manifest.text.split('\n').each { line ->
-                def tokens = line.tokenize()
-                def found = finder.findBuildByHash(tokens[0], tokens[1])
-                println 'Build ' + found
+            steps{
+
+                script{
+                    def finder = new findBuild()
+                    env.WORKSPACE = pwd()
+                    def manifest = new File("${env.WORKSPACE}/Manifest")
+                    manifest.text.split('\n').each { line ->
+                        def tokens = line.tokenize()
+                        def found = finder.findBuildByHash(tokens[0], tokens[1])
+                        println 'Build ' + found
+
+                        copyArtifacts(
+                            projectName: "${found[0]}",
+                            selector: specific("${found[1]}")
+                        )
+                    }
+                }
             }
         }
-        }
+        stage('Zip'){
+            steps{
+                zip zipFile: 'package.zip', archive: true
+                cleanWs()
+            }
         }
     }
 }
