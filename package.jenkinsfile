@@ -19,8 +19,8 @@ pipeline {
 
                         copyArtifacts(
                             projectName: "${found[0]}",
-                            selector: specific("${found[1]}")
-                            target: arts
+                            selector: specific("${found[1]}"),
+                            target: arts )
                         )
                     }
                 }
